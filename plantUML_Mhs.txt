@@ -1,0 +1,36 @@
+@startuml
+entity Skor_Mhs {
+       score_id : number <PK>
+       --
+       student id : number <FK>
+       subject_id : number <FK>
+       --
+       name : text 
+       score : number
+
+}
+
+entity Matkul {
+      subject_id : number <PK>
+      --
+      subject_name : text
+      lecturer : text
+}
+
+entity Alamat_Mhs {
+      student_id : number <PK>
+      --
+      name : text
+      address : text
+}
+
+Skor_Mhs }|--|{ Matkul
+note on link
+     Belajar
+end note
+
+Skor_Mhs ||--|{ Alamat_Mhs
+note on link 
+     Domisili
+end note
+@enduml
