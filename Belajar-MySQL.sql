@@ -50,8 +50,8 @@ SET kelamin = "L"
 WHERE name = "Andre";
 
 DELETE 
-FROM skor_mhs
-WHERE score_id = 11;
+FROM alamat
+WHERE student_id = 2;
 
 SELECT 	s.waktu_dibuat	AS Timestap,
 		s.score_id 		AS "ID Skor",
@@ -148,8 +148,47 @@ WHERE gender = "P";
 SELECT score_id, name, IFNULL(grade, '0')
 FROM skor_mhs;
     
+SELECT  AVG(score) AS "rataan kelas" FROM skor_mhs;
+SELECT AVG(score) AS "banyak nilai"
+FROM skor_mhs
+WHERE gender = "P";
 
-        
+SELECT AVG(score) AS rataan, gender
+FROM skor_mhs
+GROUP BY gender
+HAVING rataan < 70;
+
+SELECT MAX(score) AS total, subject_id
+FROM skor_mhs
+GROUP BY subject_id
+HAVING total > 80;
+
+ALTER TABLE matkul
+ADD CONSTRAINT email_unique UNIQUE (email);
+
+ALTER TABLE matkul
+	MODIFY COLUMN email VARCHAR(100)
+		AFTER lecturer;
+
+CREATE TABLE alamat(
+	student_id INT NOT NULL AUTO_INCREMENT,
+    full_name VARCHAR(100) NOT NULL,
+    address VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    PRIMARY KEY(student_id),
+    UNIQUE KEY email_unique (email)
+) ENGINE = InnoDB;
+
+DESCRIBE alamat;
+
+SELECT * FROM alamat;
+
+INSERT INTO alamat (full_name, address, email)
+VALUE ("Reo Kodok", "Pule", "andi@gmail.com");
+
+
+
+
 
 
 
