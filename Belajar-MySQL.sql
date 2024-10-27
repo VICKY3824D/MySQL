@@ -4,19 +4,19 @@ use belajar_mysql;
 
 SELECT * FROM skor_mhs;
 
-SELECT * FROM matkul;
+SELECT * FROM identitas_mahasiswa;
 
 SHOW TABLES;
 
 DESCRIBE skor_mhs;
 
+DESCRIBE matkul;
+
 SHOW CREATE TABLE skor_mhs;
 
-INSERT INTO matkul (subject_id, subject_name, lecturer)
-VALUES 	(11, "Alpro","Faizah"),
-		(12, "PPK","Firma"),
-		(13, "PTIIK","Ganjar"),
-        (14, "PDE","Syarif");
+INSERT INTO matkul ( subject_name, lecturer)
+VALUES 	( "PPK","Airlangga"),
+        ("Matdis","Umar");
         
 SELECT * FROM matkul;
 
@@ -45,9 +45,18 @@ ALTER TABLE skor_mhs
 	ADD COLUMN kelamin ENUM("L","P")
 		AFTER name;
         
+UPDATE matkul
+SET email = "ganjar@gmail.com"
+WHERE subject_id = 13;
+        
 UPDATE skor_mhs
-SET kelamin = "L"
-WHERE name = "Andre";
+SET student_id = 4
+WHERE name = "Andi";
+
+UPDATE matkul
+SET email = NULL
+WHERE subject_id IN (11,12,13);
+
 
 DELETE 
 FROM alamat
@@ -186,7 +195,49 @@ SELECT * FROM alamat;
 INSERT INTO alamat (full_name, address, email)
 VALUE ("Reo Kodok", "Pule", "andi@gmail.com");
 
+use jujun_profil;
 
+SELECT id, nama
+FROM anak
+WHERE id > 1;
+
+SHOW CREATE TABLE identitas_mahasiswa;
+
+ALTER TABLE alamat
+ADD INDEX name_index (full_name);
+
+
+ALTER TABLE skor_mhs
+ADD CONSTRAINT fk_skor_alamat
+FOREIGN KEY (student_id) REFERENCES alamat(student_id);
+
+ALTER TABLE skor_mhs
+ADD CONSTRAINT fk_skor_matkul
+FOREIGN KEY (subject_id) REFERENCES matkul(subject_id);
+
+SELECT * FROM skor_mhs JOIN alamat ON (skor_mhs.student_id = alamat.student_id);
+
+SELECT 	s.name AS "Nama Mahasiswa", 
+		s.gender AS "Jenis Kelamin" , 
+        s.score AS "Nilai",
+        a.address AS "Alamat",
+        m.subject_name AS "Mata Kuliah"
+FROM skor_mhs AS s
+JOIN identitas_mahasiswa AS a ON(s.student_id = a.student_id)
+JOIN matkul AS m ON(s.subject_id = m.subject_id)
+WHERE s.score > 70;
+
+ALTER TABLE identitas_mahasiswa
+ADD CONSTRAINT nik_unik
+UNIQUE (nik);
+
+ALTER TABLE identitas_mahasiswa
+ADD CONSTRAINT fk_identitas_skor
+FOREIGN KEY (student_id) REFERENCES skor_mhs (student_id);
+
+SELECT  i.full_name, i.address, s.gender
+FROM identitas_mahasiswa AS i
+JOIN skor_mhs AS s ON(i.student_id=s.student_id);
 
 
 
