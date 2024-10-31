@@ -1,6 +1,16 @@
 -- Membuat database apotek
 CREATE DATABASE apotek;
 
+-- Transaction dulu sebelum memodifikasi/insert tabel
+
+START TRANSACTION;
+
+ROLLBACK;
+
+COMMIT;
+
+-- transaction
+
 -- Menggunakan database apotek
 USE apotek;
 
