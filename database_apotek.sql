@@ -35,8 +35,8 @@ ALTER TABLE obat
 
 SHOW CREATE TABLE obat;
 
-INSERT INTO obat (nama, kategori, deskripsi, harga, stok, kadaluarsa)
-VALUES 	("Vitmol", "dalam", "3x", 12000, 223, "2027-03-15");
+INSERT INTO obat (nama_obat,  deskripsi, harga_obat, stok, kode_penjual, kadaluarsa)
+VALUES 	("plupinol",  "plupinol untuk sakit pinggang", 21000, 142,"AA", "2029-11-15");
         
 UPDATE obat
 SET deskripsi = "salep untuk flu"
@@ -84,8 +84,7 @@ CREATE TABLE kategori (
 ) ENGINE = InnoDB;
 
 INSERT INTO kategori (kategori) 
-VALUES ('analgesik'), ('antipiretik'),
-('antibiotik'), ('antivirus'),('antijamur');
+VALUES ('antiseptik');
 
 UPDATE obat
 SET id_ktg_o = 4
@@ -104,6 +103,82 @@ SELECT 	o.id_obat AS "Id Obat"
         , o.stok  AS "Stok Tersedia"
 FROM obat AS o
 JOIN kategori AS k ON (k.id_ktg = o.id_ktg_o);
+
+-- untuk tabel penjualan  
+CREATE TABLE penjualan (
+	id_order INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    total INT NOT NULL,
+    tanggal TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+)ENGINE = InnoDB;
+
+ALTER TABLE penjualan
+MODIFY COLUMN id_order INT NOT NULL AUTO_INCREMENT;
+
+DESCRIBE penjualan;
+
+-- untuk tabel relasi anntara penjualan dengan obat
+CREATE TABLE detail_penjualan (
+	id_obat INT NOT NULL,
+    id_order INT NOT NULL,
+    harga INT NOT NULL,
+    jumlah INT NOT NULL,
+    PRIMARY KEY (id_obat, id_order)
+)ENGINE = InnoDB;
+
+SHOW CREATE TABLE detail_penjualan;
+SHOW CREATE TABLE penjualan;
+
+ALTER TABLE detail_penjualan
+ADD CONSTRAINT fk_detail_obat
+FOREIGN KEY (id_obat) REFERENCES obat(id_obat);
+
+ALTER TABLE detail_penjualan
+ADD CONSTRAINT fk_detail_penjualan_penjualan
+FOREIGN KEY (id_order) REFERENCES penjualan(id_order);
+
+INSERT INTO penjualan(total) VALUES (60000);
+
+SELECT * FROM penjualan;
+SELECT * FROM detail_penjualan;
+
+INSERT INTO detail_penjualan(id_obat, id_order, harga, jumlah)
+VALUES (2, 4, 12000, 5);
+
+SELECT 	o.nama_obat AS "Nama obat",
+		o.harga_obat AS "Harga Satuan",
+        d.jumlah AS "Jumlah",
+        (o.harga_obat * d.jumlah) AS "total harga",
+        p.tanggal AS "Tanggal beli"
+FROM detail_penjualan AS d
+JOIN penjualan AS p ON(d.id_order = p.id_order)
+JOIN obat AS o ON(d.id_obat = o.id_obat);
+
+SELECT SUM(tot)
+FROM(SELECT 
+        (obat.harga_obat * detail_penjualan.jumlah) as tot
+		FROM detail_penjualan 
+		JOIN penjualan  ON(detail_penjualan.id_order = penjualan.id_order)
+		JOIN obat ON(detail_penjualan.id_obat = obat.id_obat)
+) AS omzet;
+
+SELECT MAX(total)
+FROM(SELECT total
+	FROM penjualan
+) AS terlaris;
+
+SELECT MAX(harga_obat)
+FROM (
+	SELECT harga_obat 
+    FROM obat
+		INNER JOIN wishlist
+			ON(wishlist.id_obat = obat.id_obat)
+) AS cp;
+
+
+
+
+
+ 
 
 
 

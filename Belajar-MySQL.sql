@@ -239,6 +239,38 @@ SELECT  i.full_name, i.address, s.gender
 FROM identitas_mahasiswa AS i
 JOIN skor_mhs AS s ON(i.student_id=s.student_id);
 
+CREATE TABLE guestbooks(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100),
+    title VARCHAR(100),
+    content TEXT
+)ENGINE = InnoDB;
+
+INSERT INTO guestbooks(email,title, content)
+VALUES 	("haria@gmail.com",'hello','hello');
+        
+SELECT  email FROM identitas_mahasiswa
+UNION
+SELECT  email FROM guestbooks;
+
+SELECT email FROM identitas_mahasiswa
+UNION ALL
+SELECT   email FROM guestbooks;
+
+SELECT emails.email, COUNT(emails.email) FROM (
+SELECT email FROM identitas_mahasiswa
+UNION ALL
+SELECT email FROM guestbooks) 
+AS emails
+GROUP BY emails.email;
+
+SELECT email FROM identitas_mahasiswa;
+SELECT email FROM guestbooks;
+
+-- intersect
+SELECT DISTINCT email FROM identitas_mahasiswa
+WHERE email IN (SELECT DISTINCT email FROM guestbooks);
+
 
 
 
