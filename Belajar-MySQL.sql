@@ -2,6 +2,16 @@ SHOW DATABASES;
 
 use belajar_mysql;
 
+-- Transaction dulu sebelum memodifikasi tabel
+
+START TRANSACTION;
+
+ROLLBACK;
+
+COMMIT;
+
+-- transaction
+
 SELECT * FROM skor_mhs;
 
 SELECT * FROM identitas_mahasiswa;
@@ -14,9 +24,9 @@ DESCRIBE matkul;
 
 SHOW CREATE TABLE skor_mhs;
 
-INSERT INTO matkul ( subject_name, lecturer)
-VALUES 	( "PPK","Airlangga"),
-        ("Matdis","Umar");
+INSERT INTO matkul ( subject_name, lecturer, email, kelamin)
+VALUES 	( "PKN","Heru", "heru@gmail.com","P"),
+        ("Bahasa","Amir", "amir.kom","L");
         
 SELECT * FROM matkul;
 
@@ -92,10 +102,6 @@ WHERE grade IS NULL;
 SELECT * 
     FROM skor_mhs
     WHERE score NOT BETWEEN 50 AND 80;
-
-ALTER TABLE skor_mhs
-    RENAME COLUMN waktu_dibuat TO timestap,
-    RENAME COLUMN kelamin TO gender;
     
 SELECT * 
 	FROM skor_mhs
@@ -109,8 +115,6 @@ LIMIT 3, 2;
 
 SELECT distinct gender FROM skor_mhs;
 
-ALTER TABLE matkul
-MODIFY subject_id INT NOT NULL AUTO_INCREMENT;
 
 SELECT name, score * 10 as 'ratusan'
 FROM skor_mhs
@@ -270,6 +274,16 @@ SELECT email FROM guestbooks;
 -- intersect
 SELECT DISTINCT email FROM identitas_mahasiswa
 WHERE email IN (SELECT DISTINCT email FROM guestbooks);
+
+-- intersect menggunakan join
+SELECT DISTINCT guestbooks.email FROM guestbooks
+INNER JOIN identitas_mahasiswa
+ON (guestbooks.email=identitas_mahasiswa.email);
+
+-- Minus (A-B) or (B-A)
+SELECT DISTINCT im.email, gs.email FROM identitas_mahasiswa AS im
+RIGHT JOIN guestbooks AS gs ON (im.email=gs.email)
+WHERE im.email IS NULL;
 
 
 
